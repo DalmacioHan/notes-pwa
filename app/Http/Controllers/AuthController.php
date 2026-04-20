@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Note;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,6 @@ class AuthController extends Controller
     }
     public function store(Request $request)
     {
-
         $role = 0;
 
         $validate = $request->validate([
@@ -50,8 +50,6 @@ class AuthController extends Controller
             'role' => $role,
         ]);
 
-
-
         Auth::login($user);
         return redirect()->route('dashboard');
     }
@@ -62,5 +60,15 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+    public function dashboard()
+    {
+    $user = Auth::user();
+        if ($user -> role == 1) {
+            $notes = Note::with('user')->latest()->get();
+            return view('admin.dashboard', compact('notes'));
+        }
+        $notes = $user->notes;
+        return view('dashboard', compact('notes'));
     }
 }
