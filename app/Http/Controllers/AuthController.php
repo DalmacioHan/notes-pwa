@@ -33,21 +33,17 @@ class AuthController extends Controller
     {
         $role = 0;
 
-        $validate = $request->validate([
-            'name'=> 'required|max:255',
-            'email'=> 'required|email|unique:users,email',
-            'password'=> 'required|min:6',
-        ]);
 
         if ($request->admin_key === 'admin123') {
             $role = 1;
         }
 
+
         $user = User::create([
-            'name' => $validate['name'],
-            'email' => $validate['email'],
-            'password' => bcrypt($validate['password']),
-            'role' => $role,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $role
         ]);
 
         Auth::login($user);
@@ -63,12 +59,18 @@ class AuthController extends Controller
     }
     public function dashboard()
     {
-    $user = Auth::user();
-        if ($user -> role == 1) {
-            $notes = Note::with('user')->latest()->get();
-            return view('admin.dashboard', compact('notes'));
+        $user = Auth::user();
+
+
+        if ($user->role == 1) {
+            $notes = Note::latest()->get();
+        } else {
+            $notes = $user->notes;
         }
-        $notes = $user->notes;
+
+
         return view('dashboard', compact('notes'));
     }
+
+
 }
