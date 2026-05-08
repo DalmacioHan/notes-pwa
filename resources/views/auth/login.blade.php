@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0f172a">
 <title>Login - Notes App</title>
 
     <style>
@@ -132,6 +135,31 @@
 
         .btn-login:active { transform: translateY(0); }
 
+        .btn-install {
+        width: 100%;
+        margin-top: 16px;
+        padding: 14px;
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        font-family: Poppins;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+        }
+
+        .btn-install:hover {
+        opacity: 0.96;
+        transform: translateY(-1px);
+        }
+
+        .btn-install:active {
+        transform: translateY(0);
+        }
+
         /* Weather card look */
         .glass-card {
         width: 100%;
@@ -192,8 +220,12 @@
         <p>
             <a href="{{ route('register') }}" class="text-gray-600">Create an account</a>
         </p>
+        <button id="installBtn" type="button"
+            class="btn-install"
+            style="display:none;">
+            Install App
+        </button>
         </div>
-
     </div>
 
     <script>
@@ -207,6 +239,43 @@
             return false;
         }
         return true;
+        }
+    </script>
+
+    <script>
+        let deferredInstallPrompt = null;
+        const installButton = document.getElementById('installBtn');
+
+        function isAppInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        }
+
+        if (installButton && !isAppInstalled()) {
+            window.addEventListener('beforeinstallprompt', function (event) {
+                event.preventDefault();
+                deferredInstallPrompt = event;
+                installButton.style.display = 'block';
+            });
+
+            installButton.addEventListener('click', async function () {
+                if (!deferredInstallPrompt) {
+                    return;
+                }
+
+                deferredInstallPrompt.prompt();
+                const choiceResult = await deferredInstallPrompt.userChoice;
+
+                if (choiceResult.outcome === 'accepted') {
+                    installButton.style.display = 'none';
+                }
+
+                deferredInstallPrompt = null;
+            });
+
+            window.addEventListener('appinstalled', function () {
+                installButton.style.display = 'none';
+                deferredInstallPrompt = null;
+            });
         }
     </script>
 

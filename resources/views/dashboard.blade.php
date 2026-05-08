@@ -13,36 +13,118 @@
 
         body {
             font-family: Poppins, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #b8d1ff;
+            background: #dbe2ef;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding-top: 30px;
+            padding: 28px 16px;
         }
         .glass {
             width: 100%;
             max-width: 420px;
-            margin: 16px;
-            padding: 20px;
+            margin: 0;
+            padding: 22px;
             border-radius: 20px;
-            background: rgba(255, 254, 254, 0.804);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px rgba(0,0,0,.2);
+            background: white;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; color: #141313;}
-        .header h6 { margin: 0; font-weight: 600;}
-        .note-card { box-shadow: inset: 0 4px 15px rgba(0,0,0,.2); background: rgba(192, 201, 199, 0.83); border-radius: 14px; padding: 14px; margin-bottom: 12px; color: #070707; }
-        .note-title { font-size: 0.95rem; font-weight: 600;}
-        .note-content { font-size: 0.8rem; opacity: 0.85;}
-        .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: #fff; color: #764ba2; font-size: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,.3); text-decoration: none;}
-        .empty-message { color: #1a1515; text-align: center; opacity: 0.8; margin-top: 20px;}
-        .add-note-card { box-shadow: inset: 0 4px 15px rgba(255, 254, 254, 0.804); background: rgba(192, 201, 199, 0.83); border-radius: 14px; padding: 14px; margin-bottom: 12px; color: #fff;}
-        .add-note-card input, .add-note-card textarea { background: rgba(255, 255, 255, 0.623); border: none; color: #fff;}
-        .add-note-card input::placeholder, .add-note-card textarea::placeholder { color: rgba(0, 0, 0, 0.644);}
-        .fas-star { color: #f39c12;}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+            color: #333;
+        }
+        .header h6 {
+            margin: 0;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        .header small {
+            display: inline-block;
+            margin-top: 6px;
+            color: #666;
+            font-weight: 500;
+        }
+        .note-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            color: #333;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+        }
+        .note-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px;}
+        .note-content { font-size: 0.92rem; color: #555; margin-bottom: 10px; white-space: pre-wrap;}
+        .empty-message {
+            color: #666;
+            text-align: center;
+            opacity: 0.95;
+            margin-top: 18px;
+            padding: 18px 12px;
+            border: 1px dashed #cfd6e4;
+            border-radius: 14px;
+            background: #f8faff;
+        }
+        .add-note-card {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 14px;
+            color: #333;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+        .add-note-card input, .add-note-card textarea {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            color: #333;
+        }
+        .add-note-card input:focus, .add-note-card textarea:focus {
+            background: #fff;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .add-note-card input::placeholder, .add-note-card textarea::placeholder {
+            color: #777;
+        }
+        .add-note-card .btn-primary {
+            background: blue;
+            border-color: blue;
+            font-weight: 600;
+        }
+        .add-note-card .btn-primary:hover {
+            background: #0056d6;
+            border-color: #0056d6;
+        }
+        .btn-outline-primary {
+            color: blue;
+            border-color: blue;
+        }
+        .btn-outline-primary:hover {
+            background: blue;
+            border-color: blue;
+            color: #fff;
+        }
+        .note-card .btn-danger {
+            font-weight: 600;
+        }
+        .note-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(0, 0, 255, 0.08);
+            color: #0056d6;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -56,11 +138,12 @@
             @else
                 Hello, {{$user->name}}
             @endif
+            <small>Write, keep, and remove notes from one place.</small>
         </h6>
         <form method="POST" action="{{ route('logout') }}">
             @csrf
 
-            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-sign-out-alt"></i></button>
+            <button type="submit" class="btn btn-sm btn-outline-primary"><i class="fas fa-sign-out-alt"></i></button>
         </form>
     </div>
     <div class="add-note-card">
@@ -77,12 +160,13 @@
     </div>
 
     @if(isset($notes) && count($notes) > 0)
+
         @foreach($notes as $note)
             <div class="note-card">
                 <div class="note-title">{{ $note->title }}</div>
                 <div class="note-content">{{ $note->content }}</div>
                 @if(auth()->user()->role == 1)
-                    <small class = "text-dark">
+                    <small class="text-muted">
                         <strong>Author:</strong> {{ $note->user->name }}
                     </small>
                 @endif
